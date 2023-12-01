@@ -1,13 +1,20 @@
-/*import { openDb } from 'gtfs';
-import { readFile } from 'fs/promises';
-const config = JSON.parse(
-  await readFile(new URL('./config.json', import.meta.url))
-);
-const db = openDb(config);
+import stop from './parent_stops_with_routes.json';
+import route from './routes.json';
 
-const routes = getRoutes(
-    {}, // No query filters
-    ['route_id', 'route_short_name', 'route_color'], // Only return these fields
-    [['route_short_name', 'ASC']], // Sort by this field and direction
-    { db: db } // Options for the query. Can specify which database to use if more than one are open
-  );*/
+export function getAllRoute(){   
+  try {
+    const medicaments=JSON.parse(JSON.stringify(route))
+    return medicaments
+  } catch (error) {
+    console.error('Error reading JSON file', error);
+  }
+}
+
+export function getAllStop(){   
+  try {
+    const medicaments=JSON.parse(JSON.stringify(stop))
+    return medicaments
+  } catch (error) {
+    console.error('Error reading JSON file', error);
+  }
+}
