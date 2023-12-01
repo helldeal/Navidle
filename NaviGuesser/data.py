@@ -1,4 +1,5 @@
 import pandas as pd
+
 pd.set_option('display.max_columns', 14)
 pd.set_option('display.width', 1000)
 # Loading the necessary files
@@ -7,29 +8,49 @@ trips_df = pd.read_csv('NaviGuesser/gtfs-tan/trips.txt')
 stop_times_df = pd.read_csv('NaviGuesser/gtfs-tan/stop_times.txt', low_memory=False)
 stops_df = pd.read_csv('NaviGuesser/gtfs-tan/stops.txt')
 
-# Merging the data to get the route for each stop
-# First, merge trips with routes
+# Exclure certaines lignes spécifiques
+excluded_routes = ['LC', 'LCE', 'LCN', 'LCO', 'LN', 'LO', 'LS']
+routes_df = routes_df[~routes_df['route_short_name'].isin(excluded_routes)]
+
+# Identifier les arrêts principaux (supposer que les arrêts principaux n'ont pas de parent_station ou sont leur propre parent)
+parent_stops = stops_df[stops_df['parent_station'].isna() | (stops_df['stop_id'] == stops_df['parent_station'])]
+
+# Fusion des DataFrames pour obtenir les informations sur les arrêts pour chaque route
 route_trip_df = pd.merge(trips_df[['route_id', 'trip_id']], routes_df[['route_id', 'route_short_name', 'route_long_name']], on='route_id')
-# Then, merge with stop_times
 route_trip_stop_df = pd.merge(route_trip_df, stop_times_df[['trip_id', 'stop_id']], on='trip_id')
-# Finally, merge with stops
 route_stop_df = pd.merge(route_trip_stop_df, stops_df, on='stop_id')
 
-# Removing duplicates and sorting
-route_stop_df = route_stop_df.drop_duplicates(subset=['route_id', 'stop_id']).sort_values(by=['route_id', 'stop_id'])
+# Regroupement par arrêt parent et rassemblement des lignes pour chaque arrêt
+stops_with_routes = route_stop_df.groupby('stop_id').agg({
+    'stop_name': 'first',  # Prendre le nom de l'arrêt
+    'stop_lat': 'first',  # Prendre le nom de l'arrêt
+    'stop_lon': 'first',  # Prendre le nom de l'arrêt
+    'parent_station': 'first',  # Prendre le nom de l'arrêt
+    'route_short_name': lambda x: list(x.unique())  # Liste des lignes uniques pour chaque arrêt
+}).reset_index()
 
-def getRouteWithStop(idRoute):
-    # Filtering for the specified route
-    route_stops = route_stop_df[route_stop_df['route_short_name'] == idRoute].sort_values(by=['trip_id', 'stop_id'])
-    
-    # Dropping duplicates and resetting index
-    unique_stops_route = route_stops.drop_duplicates(subset=['stop_id']).reset_index(drop=True)
-    
-    return unique_stops_route
+stops_with_routes=pd.merge(parent_stops,stops_with_routes[['parent_station','route_short_name']], right_on='parent_station', left_on='stop_id')
 
-# Display all stop information for route 27
-route_27_stops_info = getRouteWithStop('27')
-#print(route_27_stops_info)
+def combine_lists(series):
+    return list(set(series.sum()))
+
+stops_with_routes=stops_with_routes.groupby('stop_id').agg({
+    'stop_name': 'first',  # Prendre le nom de l'arrêt
+    'stop_lat': 'first',  # Prendre le nom de l'arrêt
+    'stop_lon': 'first',  # Prendre le nom de l'arrêt
+    'route_short_name': combine_lists,  
+}).reset_index()
+
+# Conversion du DataFrame en JSON
+json_stops_with_routes = stops_with_routes.to_json(orient='records')
+
+# Chemin du fichier pour stocker le JSON
+stops_routes_file_path = 'parent_stops_with_routes.json'
+
+# Écriture du JSON dans un fichier
+with open(stops_routes_file_path, 'w') as file:
+    file.write(json_stops_with_routes)
+
 json_result = routes_df.to_json(orient='records')
 
 # Chemin du fichier où stocker le JSON
