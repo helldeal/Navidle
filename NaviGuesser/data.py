@@ -30,4 +30,11 @@ def getRouteWithStop(idRoute):
 # Display all stop information for route 27
 route_27_stops_info = getRouteWithStop('27')
 #print(route_27_stops_info)
-print(routes_df)
+json_result = routes_df.to_json(orient='records')
+
+# Chemin du fichier où stocker le JSON
+file_path = 'routes.json'
+
+# Écrire le JSON dans un fichier
+with open(file_path, 'w') as file:
+    file.write(json_result)
