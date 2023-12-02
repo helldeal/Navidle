@@ -1,6 +1,7 @@
 import "./App.css";
 import SVGbyRouteType from "./component/SVGbyRouteType";
 import { getAllRoute, getAllRoutebyType, getAllStop } from "./dao/GTFS";
+import MapComp from "./component/Map";
 
 interface Route {
   route_id: string;
@@ -8,14 +9,15 @@ interface Route {
   route_text_color: string;
   route_color: string;
   route_short_name: string;
-  // ... other properties
 }
 
 function App() {
-  const routes = getAllRoute();
-  const stops = getAllStop();
+  const allRoutes = getAllRoute();
+  const allStops = getAllStop();
+
+  console.log(allStops)
+  //console.log(allRoutes)
   
-  // Assuming routesTyped is an array of [route_type, Route[]] pairs
   const routesTyped: [string, Route[]][] = Object.entries(getAllRoutebyType());
   
   const routesList = routesTyped.map(([routeType  , routes]) => {
@@ -34,7 +36,7 @@ function App() {
       </li>
     ));
     return (
-      <div className="flex items-start gap-4 py-2">
+      <div className="flex items-start gap-4 py-2" key={Number(routeType)}>
         {SVGbyRouteType(Number(routeType))}
         <ul className="flex flex-wrap items-center gap-2">{laneList}</ul>
       </div>
@@ -43,20 +45,18 @@ function App() {
   return (
     <>
       <div className="flex flex-col items-stretch w-screen h-full justify-stretch lg:flex-row">
-        <div className="relative z-30 flex items-start justify-end w-screen p-2 lg:justify-center lg:w-auto grow gap-x-2">
-          <div className="flex items-start justify-end lg:justify-center"></div>
-        </div>
+        <MapComp allStops={allStops}/>
         <div className="shrink-0">
           <div className="flex-col hidden gap-4 px-8 py-4 overflow-y-scroll transition shadow-lg lg:h-screen lg:flex lg:max-w-lg bg-slate-100">
             <div className="flex flex-col p-4 space-y-4 bg-white rounded-lg">
               <div className="text-sm font-medium uppercase text-slate-800">
-                {routes.length} lignes à Nantes
+                {allRoutes.length} lignes à Nantes
               </div>
               {routesList}
             </div>
             <div className="flex flex-col p-4 space-y-4 bg-white rounded-lg grow">
               <div className="text-sm font-medium uppercase text-slate-800">
-                Aucun arrêt trouvé sur {stops.length}
+              {allStops.length} arrêts trouvés sur {allStops.length}
               </div>
             </div>
           </div>

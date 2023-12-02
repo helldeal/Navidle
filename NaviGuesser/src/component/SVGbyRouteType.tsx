@@ -18,7 +18,7 @@ export default function SVGbyRouteType(id: number) {
       </svg>
       </div>
     );
-  } else if (id === 4) {
+  } else if (id === 3) {
     svgDiv = (
       <div>
       <svg
@@ -35,7 +35,7 @@ export default function SVGbyRouteType(id: number) {
       </svg>
       </div>
     );
-  } else if (id === 3) {
+  } else if (id === 4) {
     svgDiv = (
       <div>
       <svg
