@@ -2,23 +2,30 @@ import { MapContainer, Marker, Popup, TileLayer  } from 'react-leaflet'
 import "leaflet/dist/leaflet.css"
 import { LatLngExpression, divIcon } from 'leaflet';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { getFirstRouteShortNameForStop } from '../dao/GTFS';
 
 
 export default function MapComp({allStops}:any) {
     const ShowAll= allStops.map((stop:any) => {
       const position:LatLngExpression = [stop.stop_lat, stop.stop_lon]
-      const iconMarkup = renderToStaticMarkup(
-        <div className='leaflet-marker-icon rounded-full shadow border !origin-center leaflet-zoom-animated leaflet-interactive'></div>
-      );
-      const customMarkerIcon = divIcon({
-        html: iconMarkup
+      const route = getFirstRouteShortNameForStop(stop)
+      const style=`
+      display: block;
+      width: 100%;
+      height: 100%;
+      background-color: #${route.route_color};
+      `
+      
+      const customMarkerIcon = divIcon({  
+        html: `<span style="${style}" />`,
+        className: 'leaflet-marker-icon rounded-full shadow border !origin-center leaflet-zoom-animated leaflet-interactive'
       });
       return(
         <Marker position={position} icon={customMarkerIcon}>
           <Popup>
             {stop.stop_name}
           </Popup>
-        </Marker>
+        </Marker> 
 
       )
     }

@@ -15,7 +15,7 @@ function App() {
   const allRoutes = getAllRoute();
   const allStops = getAllStop();
 
-  console.log(allStops)
+  //console.log(allStops)
   //console.log(allRoutes)
   
   const routesTyped: [string, Route[]][] = Object.entries(getAllRoutebyType());
