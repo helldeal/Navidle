@@ -14,6 +14,7 @@ interface Route {
 function App() {
   const allRoutes = getAllRoute();
   const allStops = getAllStop();
+  const allStopsFinded = getAllStop();
 
   //console.log(allStops)
   //console.log(allRoutes)
@@ -43,7 +44,7 @@ function App() {
     );
   });
 
-  const findedList = allStops.map((stop: any) => {
+  const findedList = allStopsFinded.map((stop: any) => {
     const laneList = stop.route_short_name.map((routename: string) => {
       const route=getRouteByShortName(routename)
       return (
@@ -85,7 +86,7 @@ function App() {
             </div>
             <div className="flex flex-col p-4 space-y-4 bg-white rounded-lg grow">
               <div className="text-sm font-medium uppercase text-slate-800">
-                {allStops.length} arrêts trouvés sur {allStops.length}
+                {allStopsFinded.length} arrêts trouvés sur {allStops.length}
               </div>
               <ul className="space-y-1">{findedList}</ul>
             </div>

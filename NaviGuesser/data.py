@@ -12,6 +12,11 @@ stops_df = pd.read_csv('NaviGuesser/gtfs-tan/stops.txt')
 excluded_routes = ['LC', 'LCE', 'LCN', 'LCO', 'LN', 'LO', 'LS','101','102','104','105','107','108','109','111','112','115','116','117','118','119','122','126','127','128','129','131','135','137','138','139','141','142','147','149','152','157','158','159','162','169','172','179','187','189','192']
 routes_df = routes_df[~routes_df['route_short_name'].isin(excluded_routes)]
 
+routes_df['route_short_name'] = routes_df['route_short_name'].fillna('NA')
+
+# Création du dictionnaire pour le tri des routes
+route_order_dict = routes_df.set_index('route_short_name')['route_sort_order'].to_dict()
+
 # Identifier les arrêts principaux (supposer que les arrêts principaux n'ont pas de parent_station ou sont leur propre parent)
 parent_stops = stops_df[stops_df['parent_station'].isna() | (stops_df['stop_id'] == stops_df['parent_station'])]
 
@@ -20,25 +25,31 @@ route_trip_df = pd.merge(trips_df[['route_id', 'trip_id']], routes_df[['route_id
 route_trip_stop_df = pd.merge(route_trip_df, stop_times_df[['trip_id', 'stop_id']], on='trip_id')
 route_stop_df = pd.merge(route_trip_stop_df, stops_df, on='stop_id')
 
+# Fonction pour trier les routes en fonction de leur ordre
+def sort_routes(routes):
+    return sorted(routes, key=lambda x: route_order_dict.get(x, float('inf')))
+
 # Regroupement par arrêt parent et rassemblement des lignes pour chaque arrêt
 stops_with_routes = route_stop_df.groupby('stop_id').agg({
-    'stop_name': 'first',  # Prendre le nom de l'arrêt
-    'stop_lat': 'first',  # Prendre le nom de l'arrêt
-    'stop_lon': 'first',  # Prendre le nom de l'arrêt
-    'parent_station': 'first',  # Prendre le nom de l'arrêt
-    'route_short_name': lambda x: list(x.unique())  # Liste des lignes uniques pour chaque arrêt
+    'stop_name': 'first',  
+    'stop_lat': 'first',  
+    'stop_lon': 'first',  
+    'parent_station': 'first',  
+    'route_short_name': lambda x: sort_routes(list(x.unique()))
 }).reset_index()
 
 stops_with_routes=pd.merge(parent_stops,stops_with_routes[['parent_station','route_short_name']], right_on='parent_station', left_on='stop_id')
 
-def combine_lists(series):
-    return list(set(series.sum()))
+def combine_and_sort_routes(lists_of_routes):
+    combined_routes = set(sum(lists_of_routes, []))  # Combinaison des routes sans doublons
+    sorted_routes = sorted(combined_routes, key=lambda x: route_order_dict.get(x, float('inf')))
+    return sorted_routes
 
 stops_with_routes=stops_with_routes.groupby('stop_id').agg({
-    'stop_name': 'first',  # Prendre le nom de l'arrêt
-    'stop_lat': 'first',  # Prendre le nom de l'arrêt
-    'stop_lon': 'first',  # Prendre le nom de l'arrêt
-    'route_short_name': combine_lists,  
+    'stop_name': 'first',  
+    'stop_lat': 'first',  
+    'stop_lon': 'first',  
+    'route_short_name': combine_and_sort_routes, 
 }).reset_index()
 
 # Conversion du DataFrame en JSON
