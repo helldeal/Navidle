@@ -1,7 +1,6 @@
 import { MapContainer, Marker, Popup, TileLayer  } from 'react-leaflet'
 import "leaflet/dist/leaflet.css"
 import { LatLngExpression, divIcon } from 'leaflet';
-import { renderToStaticMarkup } from 'react-dom/server';
 import { getFirstRouteShortNameForStop } from '../dao/GTFS';
 
 
@@ -14,6 +13,8 @@ export default function MapComp({allStops}:any) {
       width: 100%;
       height: 100%;
       background-color: #${route.route_color};
+      border-color: #${route.route_text_color};
+      border-radius: 9999px;
       `
       
       const customMarkerIcon = divIcon({  
@@ -21,7 +22,7 @@ export default function MapComp({allStops}:any) {
         className: 'leaflet-marker-icon rounded-full shadow border !origin-center leaflet-zoom-animated leaflet-interactive'
       });
       return(
-        <Marker position={position} icon={customMarkerIcon}>
+        <Marker position={position} icon={customMarkerIcon} key={stop.stop_id}>
           <Popup>
             {stop.stop_name}
           </Popup>

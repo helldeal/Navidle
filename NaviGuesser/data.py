@@ -9,7 +9,7 @@ stop_times_df = pd.read_csv('NaviGuesser/gtfs-tan/stop_times.txt', low_memory=Fa
 stops_df = pd.read_csv('NaviGuesser/gtfs-tan/stops.txt')
 
 # Exclure certaines lignes spécifiques
-excluded_routes = ['LC', 'LCE', 'LCN', 'LCO', 'LN', 'LO', 'LS']
+excluded_routes = ['LC', 'LCE', 'LCN', 'LCO', 'LN', 'LO', 'LS','101','102','104','105','107','108','109','111','112','115','116','117','118','119','122','126','127','128','129','131','135','137','138','139','141','142','147','149','152','157','158','159','162','169','172','179','187','189','192']
 routes_df = routes_df[~routes_df['route_short_name'].isin(excluded_routes)]
 
 # Identifier les arrêts principaux (supposer que les arrêts principaux n'ont pas de parent_station ou sont leur propre parent)
@@ -45,7 +45,7 @@ stops_with_routes=stops_with_routes.groupby('stop_id').agg({
 json_stops_with_routes = stops_with_routes.to_json(orient='records')
 
 # Chemin du fichier pour stocker le JSON
-stops_routes_file_path = 'parent_stops_with_routes.json'
+stops_routes_file_path = 'NaviGuesser/src/dao/parent_stops_with_routes.json'
 
 # Écriture du JSON dans un fichier
 with open(stops_routes_file_path, 'w') as file:
@@ -54,7 +54,7 @@ with open(stops_routes_file_path, 'w') as file:
 json_result = routes_df.to_json(orient='records')
 
 # Chemin du fichier où stocker le JSON
-file_path = 'routes.json'
+file_path = 'NaviGuesser/src/dao/routes.json'
 
 # Écrire le JSON dans un fichier
 with open(file_path, 'w') as file:
