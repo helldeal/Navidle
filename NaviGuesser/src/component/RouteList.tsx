@@ -1,6 +1,6 @@
 import SVGbyRouteType from "./SVGbyRouteType";
 
-export default function RoutesList({routesTyped, allStopsFinded}:any) {
+export default function RoutesList({routesTyped, allStopsFinded,allStops}:any) {
   const routesList = routesTyped.map(([routeType, routes]: any) => {
     const laneList = routes.map((route: any) => {
       return (
