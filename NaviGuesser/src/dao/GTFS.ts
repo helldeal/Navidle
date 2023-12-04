@@ -42,3 +42,9 @@ export function getRouteByShortName(routeShortName: string) {
   const route = Allroute.find((r:any) => r.route_short_name === routeShortName);
   return route || null; // Return the route if found, otherwise null
 }
+
+export function getStopsForRoute(route: any,stops:any) {
+  return stops.filter((stop:any) => 
+    stop.route_short_name.includes(route.route_short_name)
+  );
+}

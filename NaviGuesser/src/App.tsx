@@ -17,16 +17,12 @@ function App() {
   const allRoutes = getAllRoute();
   const allStops = getAllStop();
   const [allStopsFinded, setAllStopsFinded] = useState(
-    allStops.filter((item: any) => item.stop_name === "Joliverie")
+    allStops.slice(500,700)
   );
   const [pointed, setPointed] = useState(null);
 
   //console.log(allStops)
   //console.log(allRoutes)
-
-  useEffect(()=>{
-    console.log(pointed)
-  },[pointed])
 
   const routesTyped: [string, Route[]][] = Object.entries(getAllRoutebyType());
 

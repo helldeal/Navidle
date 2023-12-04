@@ -1,19 +1,25 @@
+import { getStopsForRoute } from "../dao/GTFS";
 import SVGbyRouteType from "./SVGbyRouteType";
 
 export default function RoutesList({routesTyped, allStopsFinded,allStops}:any) {
   const routesList = routesTyped.map(([routeType, routes]: any) => {
     const laneList = routes.map((route: any) => {
+      const stopListFindedbyRoute=getStopsForRoute(route,allStopsFinded)
+      const stopListbyRoute=getStopsForRoute(route,allStops)
+      console.log(stopListFindedbyRoute)
+      console.log(`Ligne ${route.route_short_name} ${stopListFindedbyRoute.length}/${stopListbyRoute.length}` )
       return (
         <li key={route.route_id}>
           <div
-            className="relative flex flex-col items-center justify-center shadow-sm group w-6 h-6 text-[10px] font-bold opacity-30 hover:opacity-100"
+            className="relative flex flex-col items-center justify-center shadow-sm group w-6 h-6 text-[10px] font-bold hover:opacity-100"
             style={{
               color: "#" + route.route_text_color,
               backgroundColor: "#" + route.route_color,
             }}
           >
             <div className="leading-none">{route.route_short_name}</div>
-            <div className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-0"></div>
+            <div className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-0"
+            style={{backgroundImage: `conic-gradient(transparent 0deg ${stopListFindedbyRoute.length*360/stopListbyRoute.length}deg, rgba(255, 255, 255, 0.7) ${stopListFindedbyRoute.length*360/stopListbyRoute.length}deg 360deg)`}}></div>
           </div>
           {/*
           <div className="absolute inset-x-0 z-10 flex flex-col items-stretch justify-between p-4 text-sm text-center text-gray-800 -translate-y-1/2 bg-white border rounded-lg shadow-2xl top-1/2 gap-y-4 border-slate-100">
