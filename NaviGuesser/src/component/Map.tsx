@@ -59,7 +59,7 @@ function FlyTo({ pointed,setPointed }:any) {
   const map = useMap();
   if (pointed){
     const position: LatLngExpression = [pointed.stop_lat, pointed.stop_lon];
-    map.flyTo(position, map.getZoom());
+    map.flyTo(position, 15);
   }
   setPointed(null)
 

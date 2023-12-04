@@ -6,7 +6,7 @@ export default function RoutesList({routesTyped, allStopsFinded}:any) {
       return (
         <li key={route.route_id}>
           <div
-            className="relative flex flex-col items-center justify-center shadow-sm group w-6 h-6 text-[10px] font-bold"
+            className="relative flex flex-col items-center justify-center shadow-sm group w-6 h-6 text-[10px] font-bold opacity-30 hover:opacity-100"
             style={{
               color: "#" + route.route_text_color,
               backgroundColor: "#" + route.route_color,

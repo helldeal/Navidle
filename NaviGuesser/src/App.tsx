@@ -17,7 +17,7 @@ function App() {
   const allRoutes = getAllRoute();
   const allStops = getAllStop();
   const [allStopsFinded, setAllStopsFinded] = useState(
-    allStops.filter((item: any) => item.stop_name === "Greneraie")
+    allStops.filter((item: any) => item.stop_name === "Joliverie")
   );
   const [pointed, setPointed] = useState(null);
 
