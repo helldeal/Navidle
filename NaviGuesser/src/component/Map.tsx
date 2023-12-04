@@ -1,9 +1,9 @@
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { LatLngExpression, divIcon } from "leaflet";
+import {  LatLngExpression, divIcon } from "leaflet";
 import { getFirstRouteShortNameForStop } from "../dao/GTFS";
 
-export default function MapComp({ allStops }: any) {
+export default function MapComp({ allStops,pointed,setPointed }: any) {
   const ShowAll = allStops.map((stop: any) => {
     const position: LatLngExpression = [stop.stop_lat, stop.stop_lon];
     const route = getFirstRouteShortNameForStop(stop);
@@ -31,6 +31,7 @@ export default function MapComp({ allStops }: any) {
       </Marker>
     );
   });
+
   return (
     <MapContainer
       center={{ lat: 47.213, lng: -1.55054562 }}
@@ -49,6 +50,22 @@ export default function MapComp({ allStops }: any) {
         url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png"
       />
       {ShowAll}
+      <FlyTo pointed={pointed} setPointed={setPointed}/>
     </MapContainer>
   );
+}
+
+function FlyTo({ pointed,setPointed }:any) {
+  const map = useMap();
+  if (pointed){
+    const position: LatLngExpression = [pointed.stop_lat, pointed.stop_lon];
+    map.flyTo(position, map.getZoom());
+  }
+  setPointed(null)
+
+  return pointed === null ? null : (/*
+    <Marker position={position}>
+      <Popup>You are here</Popup>
+    </Marker>*/null
+  )
 }
