@@ -12,4 +12,21 @@
     line-height: inherit;
     font-family: Ubuntu, ui-sans-serif, system-ui;
   }
-  
+
+  @keyframes scaleAnimation {
+    0% {
+      transform: scale(1);
+    }
+    25% {
+      transform: scale(3);
+    }
+    50% {
+      transform: scale(1);
+    }
+    75% {
+      transform: scale(3);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }

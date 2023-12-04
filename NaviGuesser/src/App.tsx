@@ -3,7 +3,7 @@ import { getAllRoute, getAllRoutebyType, getAllStop } from "./dao/GTFS";
 import MapComp from "./component/Map";
 import RoutesList from "./component/RouteList";
 import FindedList from "./component/FindedList";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Route {
   route_id: string;
@@ -23,6 +23,10 @@ function App() {
 
   //console.log(allStops)
   //console.log(allRoutes)
+
+  useEffect(()=>{
+    console.log(pointed)
+  },[pointed])
 
   const routesTyped: [string, Route[]][] = Object.entries(getAllRoutebyType());
 
