@@ -47,7 +47,7 @@ export default function MapComp({ allStops, pointed, setPointed }: any) {
     <MapContainer
       center={{ lat: 47.213, lng: -1.55054562 }}
       zoom={13}
-      className="relative z-30 flex items-start justify-end w-screen p-2 lg:justify-center lg:w-auto grow gap-x-2"
+      className="absolute inset-0 -z-10 leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>'
@@ -55,15 +55,6 @@ export default function MapComp({ allStops, pointed, setPointed }: any) {
       />
       {ShowAll}
       <FlyTo pointed={pointed} />
-      <div className="flex items-start justify-end lg:justify-center">
-        <input
-          className="w-64 px-4 py-2 text-sm text-center border rounded-full shadow-xl lg:w-80 border-slate-200 lg:text-base"
-          placeholder="Saisissez une station, et tapez ↩️"
-        />
-      </div>
-      <div className="relative z-50 flex flex-col items-center gap-4 lg:absolute lg:top-2 lg:right-2">
-        <button className="p-2 text-white transition-transform rounded-full shadow-xl bg-slate-900 hover:scale-105"></button>
-      </div>
     </MapContainer>
   );
 }

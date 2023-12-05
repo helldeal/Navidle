@@ -94,6 +94,7 @@ export default function RoutesList({
               {getStopsForRoute(display, allStopsFinded).map((stop: any) => (
                 <li
                   className="flex items-center gap-x-1"
+                  key={display.stop_id}
                 >
                   <svg
                     className="w-4"
