@@ -3,9 +3,9 @@ import { getAllRoute, getAllRoutebyType, getAllStop } from "./dao/GTFS";
 import MapComp from "./component/Map";
 import RoutesList from "./component/RouteList";
 import FindedList from "./component/FindedList";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { searchStop } from "./dao/Search";
-import { text } from "stream/consumers";
+import Cookies from "js-cookie";
 
 interface Route {
   route_id: string;
@@ -16,42 +16,53 @@ interface Route {
 }
 
 function App() {
+  let cookieStops = Cookies.get("stops");
+  if (cookieStops === undefined) {
+    cookieStops = [];
+  } else cookieStops = JSON.parse(cookieStops);
   const allRoutes = getAllRoute();
   const allStops = getAllStop();
-  const [allStopsFinded, setAllStopsFinded] = useState<any>([]);
+  const [allStopsFinded, setAllStopsFinded] = useState<any>(cookieStops);
   const [search, setSearch] = useState("");
   const [pointed, setPointed] = useState(null);
+  const [menu, setMenu] = useState(false);
   //console.log(allStops)
   //console.log(allRoutes)
   const routesTyped: [string, Route[]][] = Object.entries(getAllRoutebyType());
 
-  function handleSearch(text:string){ 
-    const result = searchStop(text)
-    if(result.length>0){
-      console.log(result)
-      setSearch("")
-      setPointed(result[0].stop)
-      allStopsFinded.push(result[0].stop)
+  function handleSearch(text: string) {
+    const result = searchStop(text);
+    if (result.length > 0) {
+      console.log(result);
+      setSearch("");
+      result.forEach((stop) => {
+        setPointed(stop.stop);
+        allStopsFinded.push(stop.stop);
+      });
+      Cookies.set("stops", JSON.stringify(allStopsFinded));
     }
   }
 
-  return (  
+  return (
     <>
       {allStopsFinded && allStops && allRoutes && (
         <div className="flex flex-col items-stretch w-screen h-full justify-stretch lg:flex-row">
           <div className="relative z-30 flex items-start justify-end w-screen p-2 lg:justify-center lg:w-auto grow gap-x-2">
             <div className="flex items-start justify-end lg:justify-center">
               <div className="relative">
-                <form onSubmit={(e)=>{
-              e.preventDefault();handleSearch(search)
-                }}>
-                <input
-                  className="w-64 px-4 py-2 text-sm text-center border rounded-full shadow-xl lg:w-80 border-slate-200 lg:text-base"
-                  placeholder="Saisissez une station, et tapez ↩️"
-                  type="text"
-                  value={search}
-                  onChange={(e)=>setSearch(e.target.value)}
-                />
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSearch(search);
+                  }}
+                >
+                  <input
+                    className="w-64 px-4 py-2 text-sm text-center border rounded-full shadow-xl lg:w-80 border-slate-200 lg:text-base"
+                    placeholder="Saisissez une station, et tapez ↩️"
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
                 </form>
               </div>
             </div>
@@ -67,7 +78,21 @@ function App() {
                   <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path>
                 </svg>
               </button>
+              <div className="absolute bottom-0 right-0 flex flex-col py-2 px-0.5 translate-y-full gap-y-2">
+              <button className="flex items-center justify-center px-3 py-2 text-sm text-white transition-transform border rounded-full shadow-xl bg-slate-900 border-slate-900 hover:scale-105 gap-x-2">
+                <svg
+                  className="w-5 h-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 256 256"
+                  fill="currentColor"
+                >
+                  <path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"></path>
+                </svg>
+                <span>Recommencez la partie</span>
+              </button>
             </div>
+            </div>
+            
             <MapComp
               allStops={allStopsFinded}
               pointed={pointed}
