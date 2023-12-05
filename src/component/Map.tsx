@@ -22,7 +22,7 @@ export default function MapComp({ allStops, pointed, setPointed }: any) {
       ${
         pointed &&
         stop.stop_id == pointed.stop_id &&
-        "animation: scaleAnimation .8s ease-in-out;"
+        "animation: scaleAnimation .5s ease-in-out;"
       }
       `;
 
@@ -63,7 +63,7 @@ function FlyTo({ pointed }: any) {
   const map = useMap();
   if (pointed) {
     const position: LatLngExpression = [pointed.stop_lat, pointed.stop_lon];
-    map.flyTo(position, 14);
+    map.panTo(position);
   }
   return null;
 }

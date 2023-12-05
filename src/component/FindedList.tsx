@@ -21,7 +21,6 @@ export default function FindedList({allStopsFinded,setPointed}: any) {
       <li key={stop.stop_id}>
         <div className="flex items-center w-full gap-2 p-2 transition-colors border border-transparent rounded-lg group hover:shadow hover:border-slate-50 hover:bg-slate-800" 
         onClick={()=>{
-          setPointed(null)
           setPointed(stop)
           }}>
           <div className="text-xs font-medium leading-none text-slate-700 group-hover:text-white">
