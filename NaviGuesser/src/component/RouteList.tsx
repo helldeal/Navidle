@@ -85,7 +85,7 @@ export default function RoutesList({
               %
             </div>
             <div className="text-xs leading-none whitespace-nowrap">
-              {getStopsForRoute(display, allStopsFinded).length} stations sur{" "}
+              {getStopsForRoute(display, allStopsFinded).length} {getStopsForRoute(display, allStopsFinded).length>1?'stations':'station'} sur{" "}
               {getStopsForRoute(display, allStops).length}
             </div>
           </div>

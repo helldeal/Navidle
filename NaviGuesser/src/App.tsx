@@ -16,10 +16,11 @@ interface Route {
 }
 
 function App() {
-  let cookieStops = Cookies.get("stops");
-  if (cookieStops === undefined) {
+  let cookieStops;
+  let cookieGet = Cookies.get("stops");
+  if (cookieGet === undefined) {
     cookieStops = [];
-  } else cookieStops = JSON.parse(cookieStops);
+  } else cookieStops = JSON.parse(cookieGet);
   const allRoutes = getAllRoute();
   const allStops = getAllStop();
   const [allStopsFinded, setAllStopsFinded] = useState<any>(cookieStops);
@@ -33,7 +34,7 @@ function App() {
   function handleSearch(text: string) {
     const result = searchStop(text);
     if (result.length > 0) {
-      console.log(result);
+      //console.log(result);
       setSearch("");
       result.forEach((stop) => {
         setPointed(stop.stop);
@@ -67,32 +68,55 @@ function App() {
               </div>
             </div>
             <div className="relative z-50 flex flex-col items-center gap-4 lg:absolute lg:top-2 lg:right-2">
-              <button className="p-2 text-white transition-transform rounded-full shadow-xl bg-slate-900 hover:scale-105">
-                <svg
-                  className="w-6 h-6"
-                  x-show="! expanded"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 256 256"
-                  fill="currentColor"
-                >
-                  <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path>
-                </svg>
+              <button
+                className="p-2 text-white transition-transform rounded-full shadow-xl bg-slate-900 hover:scale-105"
+                onClick={() => setMenu(!menu)}
+              >
+                {menu ? (
+                  <svg
+                    className="w-6 h-6"
+                    x-show="expanded"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 256 256"
+                    fill="currentColor"
+                  >
+                    <path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path>
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-6 h-6"
+                    x-show="! expanded"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 256 256"
+                    fill="currentColor"
+                  >
+                    <path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path>
+                  </svg>
+                )}
               </button>
-              <div className="absolute bottom-0 right-0 flex flex-col py-2 px-0.5 translate-y-full gap-y-2">
-              <button className="flex items-center justify-center px-3 py-2 text-sm text-white transition-transform border rounded-full shadow-xl bg-slate-900 border-slate-900 hover:scale-105 gap-x-2">
-                <svg
-                  className="w-5 h-5"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 256 256"
-                  fill="currentColor"
-                >
-                  <path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"></path>
-                </svg>
-                <span>Recommencez la partie</span>
-              </button>
+              {menu && (
+                <div className="absolute bottom-0 right-0 flex flex-col py-2 px-0.5 translate-y-full gap-y-2">
+                  <button
+                    className="flex items-center justify-center px-3 py-2 text-sm text-white transition-transform border rounded-full shadow-xl bg-slate-900 border-slate-900 hover:scale-105 gap-x-2"
+                    onClick={() => {
+                      setAllStopsFinded([]);
+                      Cookies.remove("stops");
+                    }}
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 256 256"
+                      fill="currentColor"
+                    >
+                      <path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"></path>
+                    </svg>
+                    <span>Recommencez la partie</span>
+                  </button>
+                </div>
+              )}
             </div>
-            </div>
-            
+
             <MapComp
               allStops={allStopsFinded}
               pointed={pointed}
@@ -113,7 +137,13 @@ function App() {
               </div>
               <div className="flex flex-col p-4 space-y-4 bg-white rounded-lg grow">
                 <div className="text-sm font-medium uppercase text-slate-800">
-                  {allStopsFinded.length} arrêts trouvés sur {allStops.length}
+                  {allStopsFinded.length < 1 ? "" : allStopsFinded.length}{" "}
+                  {allStopsFinded.length < 1
+                    ? "Aucun arrêt trouvé"
+                    : allStopsFinded.length < 2
+                    ? "arrêt trouvé"
+                    : "arrêts trouvés"}{" "}
+                  sur {allStops.length}
                 </div>
                 <ul className="space-y-1">
                   <FindedList
